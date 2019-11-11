@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Buy
+{% endblock %}
+
+{% block main %}
+
+    <form class="needs-validation" novalidate  action="/buy" autocomplete="off" method="post">
+        <div class="form-group">
+            <input type="text" autofocus class="form-control" placeholder="Symbol" name="symbol" required>
+            <div class="invalid-feedback">Please enter a symbol</div>
+        </div>
+        <div class="form-group">
+            <input autocomplete="off" class="form-control" min="1" name="shares" placeholder="Shares" type="number" required>
+            <div class="invalid-feedback">Please enter a share</div>
+        </div>
+        <button class="btn btn-primary" type="submit">Buy</button>
+    </form>
+
+{% endblock %}

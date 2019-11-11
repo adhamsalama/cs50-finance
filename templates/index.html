@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Portfolio
+{% endblock %}
+
+{% block main %}
+
+<div class="table-responsive">
+  <table class="table table-striped table-hover" style="text-align: left">
+        <thead>
+          <tr>
+            <th scope="col">Symbol</th>
+            <th scope="col">Name</th>
+            <th scope="col">Shares</th>
+            <th scope="col">Price</th>
+            <th scope="col" >TOTAL</th>
+            {% if stocks %}
+            <th scope="col">Buy/Sell</th>
+            {% endif %}
+          </tr>
+        </thead>
+  <tbody>
+    {% for stock in stocks %}
+    <tr>
+      <td style="vertical-align: middle">{{ stock["symbol"] }}</td>
+      <td style="vertical-align: middle">{{ stock["name"] }}</td>
+      <td style="vertical-align: middle">{{ stock["shares_num"] }}</td>
+      <td style="vertical-align: middle">{{ stock["price"]|usd }}</td>
+      <td  style="vertical-align: middle">{{ stock["sum"]|usd }}</td>
+      <td style="vertical-align: middle">
+                  <!-- Button trigger modal -->
+              {% if stock["price"] <= cash %}
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{ stock['symbol'] }}">
+                  Buy/Sell
+                </button>
+              {% endif %}
+              {% if stock["price"] > cash %}
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{ stock['symbol'] }}">
+                  Sell
+                </button>
+              {% endif %}
+
+          <!-- Modal -->
+          <div class="modal fade"  id="{{ stock['symbol'] }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title w-100 text-center" id="modalLabel">Transaction</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <h4>Symbol: {{ stock["symbol"] }}</h4>
+                  <h4>Name: {{ stock["name"] }}</h4>
+                  <p>Number of shares: {{ stock["shares_num"] }}. Total cost: {{ stock["sum"]|usd }}</p>
+                  <div class="text-center">
+                  {% if stock["price"] <= cash %}
+                    <h5>How many shares do you want to buy/sell?</h5>
+                  {% endif %}
+                  {% if stock["price"] > cash %}
+                    <h5>How many shares do you want to sell?</h5>
+                  {% endif %}
+                  </div>
+                  <form method="post">
+                    <div class="w-100 align-center text-center">
+                    <input class="form-control w-50 align-center" type="number" min="1" name="shares" required>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="symbol" value="{{ stock['symbol'] }}">
+                    {% if stock["price"] > cash %}
+                    {% endif %}
+                    {% if stock["price"] <= cash %}
+                      <button type="submit" formaction="/buy" class="btn btn-primary">Buy</button>
+                    {% endif %}
+                      <button type="submit" formaction="/sell" class="btn btn-danger">Sell</button>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td style="vertical-align: middle">CASH</td>
+      <td style="vertical-align: middle"></td>
+      <td style="vertical-align: middle"></td>
+      <td style="vertical-align: middle"></td>
+      <td  style="vertical-align: middle">{{ cash|usd }}</td>
+      {% if stocks %}
+        <td style="vertical-align: middle"></td>
+      {% endif %}
+
+
+
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td style="vertical-align: middle"></td>
+      <td style="vertical-align: middle"></td>
+      <td style="vertical-align: middle"></td>
+      <td style="vertical-align: middle"></td>
+      <td  style="vertical-align: middle"><strong>{{ total|usd }}</strong></td>
+      {% if stocks %}
+        <td style="vertical-align: middle"></td>
+      {% endif %}
+    </tr>
+  </tfoot>
+</table>
+</div>
+
+{% endblock %}
