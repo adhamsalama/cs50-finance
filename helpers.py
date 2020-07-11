@@ -1,7 +1,5 @@
-import os
 import requests
 import urllib.parse
-
 from datetime import datetime
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -66,3 +64,5 @@ def usd(value):
 def get_time():
     """Get time"""
     return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+
