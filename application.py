@@ -10,6 +10,7 @@ from helpers import apology, login_required, lookup, usd, get_time
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from flask_sqlalchemy import SQLAlchemy
 
 
 # Configure application
@@ -31,10 +32,16 @@ def after_request(response):
 app.jinja_env.filters["usd"] = usd
 
 # Configure session to use filesystem (instead of signed cookies)
-app.config["SESSION_FILE_DIR"] = mkdtemp()
+db = SQLAlchemy(app)
+db.create_all()
+
 app.config["SESSION_PERMANENT"] = True
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
+app.config["SESSION_TYPE"] = "sqlalchemy"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SESSION_SQLALCHEMY_TABLE'] = 'sessions'
+app.config['SESSION_SQLALCHEMY'] = db
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
 
 
 # Check for environment variable
