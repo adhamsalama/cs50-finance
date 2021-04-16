@@ -1,3 +1,4 @@
+import os
 import requests
 import urllib.parse
 from datetime import datetime
@@ -40,7 +41,7 @@ def lookup(symbol):
     # Contact API
     try:
         api_key = os.environ.get("API_KEY")
-        response = requests.get(f"https://cloud-sse.iexapis.com/stable/stock/{urllib.parse.quote_plus(symbol)}/quote?token=pk_e33099481ad24ac1a4088a5db00fca4d")
+        response = requests.get(f"https://cloud.iexapis.com/stable/stock/{symbol}/quote?token=pk_e33099481ad24ac1a4088a5db00fca4d")
         response.raise_for_status()
     except requests.RequestException:
         return None
